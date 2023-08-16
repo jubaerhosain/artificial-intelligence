@@ -3,12 +3,12 @@
 #include <vector>
 #include <array>
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 
 #define WIN 1000
-#define	DRAW 0
+#define DRAW 0
 #define LOSS -1000
 
 #define AI_MARKER 'O'
@@ -20,27 +20,35 @@ using std::endl;
 // Print game state
 void print_game_state(int state)
 {
-	if (WIN == state) { cout << "WIN" << endl; }
-	else if (DRAW == state) { cout << "DRAW" << endl; }
-	else if (LOSS == state) { cout << "LOSS" << endl; }
+	if (WIN == state)
+	{
+		cout << "WIN" << endl;
+	}
+	else if (DRAW == state)
+	{
+		cout << "DRAW" << endl;
+	}
+	else if (LOSS == state)
+	{
+		cout << "LOSS" << endl;
+	}
 }
 
 // All possible winning states
-std::vector<std::vector<std::pair<int, int>>> winning_states
-{
+std::vector<std::vector<std::pair<int, int>>> winning_states{
 	// Every row
-	{ std::make_pair(0, 0), std::make_pair(0, 1), std::make_pair(0, 2) },
-	{ std::make_pair(1, 0), std::make_pair(1, 1), std::make_pair(1, 2) },
-	{ std::make_pair(2, 0), std::make_pair(2, 1), std::make_pair(2, 2) },
+	{std::make_pair(0, 0), std::make_pair(0, 1), std::make_pair(0, 2)},
+	{std::make_pair(1, 0), std::make_pair(1, 1), std::make_pair(1, 2)},
+	{std::make_pair(2, 0), std::make_pair(2, 1), std::make_pair(2, 2)},
 
 	// Every column
-	{ std::make_pair(0, 0), std::make_pair(1, 0), std::make_pair(2, 0) },
-	{ std::make_pair(0, 1), std::make_pair(1, 1), std::make_pair(2, 1) },
-	{ std::make_pair(0, 2), std::make_pair(1, 2), std::make_pair(2, 2) },
+	{std::make_pair(0, 0), std::make_pair(1, 0), std::make_pair(2, 0)},
+	{std::make_pair(0, 1), std::make_pair(1, 1), std::make_pair(2, 1)},
+	{std::make_pair(0, 2), std::make_pair(1, 2), std::make_pair(2, 2)},
 
 	// Every diagonal
-	{ std::make_pair(0, 0), std::make_pair(1, 1), std::make_pair(2, 2) },
-	{ std::make_pair(2, 0), std::make_pair(1, 1), std::make_pair(0, 2) }
+	{std::make_pair(0, 0), std::make_pair(1, 1), std::make_pair(2, 2)},
+	{std::make_pair(2, 0), std::make_pair(1, 1), std::make_pair(0, 2)}
 
 };
 
@@ -52,7 +60,8 @@ void print_board(char board[3][3])
 	cout << "----------" << endl;
 	cout << board[1][0] << " | " << board[1][1] << " | " << board[1][2] << endl;
 	cout << "----------" << endl;
-	cout << board[2][0] << " | " << board[2][1] << " | " << board[2][2] << endl << endl;
+	cout << board[2][0] << " | " << board[2][1] << " | " << board[2][2] << endl
+		 << endl;
 }
 
 // Get all available legal moves (spaces that are not occupied)
@@ -194,7 +203,6 @@ int get_board_state(char board[3][3], char marker)
 	}
 
 	return DRAW;
-
 }
 
 // Apply the minimax game optimization algorithm
@@ -233,9 +241,9 @@ std::pair<int, std::pair<int, int>> minimax_optimization(char board[3][3], char 
 				// option of a previously search branch. If it is, skip it
 				alpha = std::max(alpha, best_score);
 				board[curr_move.first][curr_move.second] = EMPTY_SPACE;
-				if (beta <= alpha) 
-				{ 
-					break; 
+				if (beta <= alpha)
+				{
+					break;
 				}
 			}
 
@@ -253,16 +261,14 @@ std::pair<int, std::pair<int, int>> minimax_optimization(char board[3][3], char 
 				// option of a previously search branch. If it is, skip it
 				beta = std::min(beta, best_score);
 				board[curr_move.first][curr_move.second] = EMPTY_SPACE;
-				if (beta <= alpha) 
-				{ 
-					break; 
+				if (beta <= alpha)
+				{
+					break;
 				}
 			}
-
 		}
 
 		board[curr_move.first][curr_move.second] = EMPTY_SPACE; // Undo move
-
 	}
 
 	return std::make_pair(best_score, best_move);
@@ -284,13 +290,14 @@ bool game_is_done(char board[3][3])
 	return false;
 }
 
-
 int main()
 {
-	char board[3][3] = { EMPTY_SPACE };
+	char board[3][3] = {EMPTY_SPACE};
 
-	cout << "********************************\n\n\tTic Tac Toe AI\n\n********************************" << endl << endl;
-	cout << "Player = X\t AI Computer = O" << endl << endl;
+	cout << "********************************\n\n\tTic Tac Toe AI\n\n********************************" << endl
+		 << endl;
+	cout << "Player = X\t AI Computer = O" << endl
+		 << endl;
 
 	print_board(board);
 
@@ -301,7 +308,8 @@ int main()
 		cin >> row;
 		cout << "Col play: ";
 		cin >> col;
-		cout << endl << endl;
+		cout << endl
+			 << endl;
 
 		if (position_occupied(board, std::make_pair(row, col)))
 		{
@@ -320,12 +328,13 @@ int main()
 		print_board(board);
 	}
 
-	cout << "********** GAME OVER **********" << endl << endl;
+	cout << "********** GAME OVER **********" << endl
+		 << endl;
 
 	int player_state = get_board_state(board, PLAYER_MARKER);
 
-	cout << "PLAYER "; print_game_state(player_state);
+	cout << "PLAYER ";
+	print_game_state(player_state);
 
 	return 0;
-
 }
