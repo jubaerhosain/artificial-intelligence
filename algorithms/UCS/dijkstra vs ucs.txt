@@ -1,0 +1,20 @@
+
+Dijkstra's Algorithm finds the shortest path from the root node to every other node. uniform cost searches 
+for shortest paths in terms of cost from the root node to a goal node. Uniform Cost Search is Dijkstra's 
+Algorithm which is focused on finding a single shortest path to a single finishing point rather than the 
+shortest path to every point.
+
+UCS does this by stopping as soon as the finishing point is found. For Dijkstra, there is no goal state and 
+processing continues until all nodes have been removed from the priority queue, i.e. until shortest paths to 
+all nodes (not just a goal node) have been determined.
+
+UCS has fewer space requirements, where the priority queue is filled gradually as opposed to Dijkstra's, 
+which adds all nodes to the queue on start with an infinite cost.
+
+As a result of the above points, Dijkstra is more time consuming than UCS
+
+UCS is usually formulated on trees while Dijkstra is used on general graphs
+
+Djikstra is only applicable in explicit graphs where the entire graph is given as input. UCS starts with 
+the source vertex and gradually traverses the necessary parts of the graph. Therefore, it is applicable for 
+both explicit graphs and implicit graphs (where states/nodes are generated).
