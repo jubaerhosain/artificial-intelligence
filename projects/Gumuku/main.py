@@ -21,7 +21,7 @@ class GumukuBoard(QMainWindow):
         main_layout.addWidget(self.createGrid())
         main_layout.addWidget(self.createRightPanel())
         main_widget.setLayout(main_layout)
-        # Calculate the center position after setting the central widget
+        # Calculate the center position
         screen_geometry = QDesktopWidget().screenGeometry()
         x = (screen_geometry.width() - self.board_width) // 2
         y = (screen_geometry.height() - self.board_height) // 2
@@ -43,7 +43,6 @@ class GumukuBoard(QMainWindow):
                 button.setFixedSize(40, 40)
                 button.position = Point(row, col)
                 button.clicked.connect(self.buttonClicked)
-                # Set the button style sheet to make it circular
                 button.setStyleSheet(
                     "QPushButton { border-radius: 20px; background-color: grey; }")
                 row_buttons.append(button)
@@ -54,11 +53,9 @@ class GumukuBoard(QMainWindow):
 
     def createRightPanel(self):
         right_widget = QWidget()
-        # Create buttons
         new_game_button = QPushButton("New Game")
         reset_game_button = QPushButton("Reset Game")
         self.current_player_label = QPushButton("Current Player: You")
-        # Set button sizes and style
         button_height = 40
         button_width = 200
         new_game_button.setFixedSize(button_width, button_height)
@@ -75,24 +72,19 @@ class GumukuBoard(QMainWindow):
         self.current_player_label.setStyleSheet(
             "QPushButton { background-color: #2196F3; color: white; font-size: 18px; text-align: center; }"
         )
-        # Connect buttons to slots
         new_game_button.clicked.connect(self.newGame)
         reset_game_button.clicked.connect(self.resetGame)
-        # Create layout
         right_layout = QVBoxLayout()
         right_layout.addWidget(new_game_button)
         right_layout.addWidget(reset_game_button)
         right_layout.addWidget(self.current_player_label)
-        # Set vertical spacing between buttons
         right_layout.setSpacing(10)
-        # Center-align the buttons
         right_layout.setAlignment(Qt.AlignHCenter)
         right_widget.setLayout(right_layout)
         return right_widget
 
     def buttonClicked(self):
         sender = self.sender()
-        # Change button color on click
         current_color = sender.palette().button().color()
         new_color = QColor(
             Qt.red) if current_color == Qt.green else QColor(Qt.green)
@@ -102,7 +94,6 @@ class GumukuBoard(QMainWindow):
         print(sender.position.x, sender.position.y)
 
     def newGame(self):
-        # Reset button colors and current player label
         for row in range(10):
             for col in range(10):
                 self.buttons[row][col].setStyleSheet(
@@ -110,7 +101,6 @@ class GumukuBoard(QMainWindow):
         self.current_player_label.setText("Current Player: You")
 
     def resetGame(self):
-        # Reset button colors, current player label, and remove AI moves (if any)
         for row in range(10):
             for col in range(10):
                 self.buttons[row][col].setStyleSheet(
