@@ -36,13 +36,13 @@ class Gumuku:
     def is_valid_move(self, x: int, y: int) -> bool:
         return self.board[x][y] == self.EMPTY_MARKER
 
-    def __get_available_moves(self):
-        available_moves = []
-        for i in range(self.board_size):
-            for j in range(self.board_size):
-                if (self.board[i][j] == self.EMPTY_MARKER):
-                    available_moves.append(Point(i, j))
-        return available_moves
+    # def __get_available_moves(self):
+    #     available_moves = []
+    #     for i in range(self.board_size):
+    #         for j in range(self.board_size):
+    #             if (self.board[i][j] == self.EMPTY_MARKER):
+    #                 available_moves.append(Point(i, j))
+    #     return available_moves
 
     def __get_available_moves_1(self):
         uniq_points = set()
@@ -124,7 +124,7 @@ class Gumuku:
         elif self.__is_board_full():
             return best_move, 0
         
-        if (depth >= 3):
+        if (depth >= 4):
             # print(depth)
             return best_move, 0
 
