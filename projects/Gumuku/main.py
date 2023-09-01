@@ -125,7 +125,7 @@ class GumukuBoard(QMainWindow):
         
         self.current_player = 'X'
         self.current_player_label.setText("Current Player: You")
-
+        
         
     def game_ended(self):
         for i in range(self.game.board_size):
