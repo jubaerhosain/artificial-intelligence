@@ -1,8 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
-from PyQt5.QtWidgets import QGridLayout, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QDesktopWidget, QHBoxLayout, QPushButton
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+
 from gumuku import Gumuku, Point
 
 
@@ -11,6 +12,10 @@ class GumukuBoard(QMainWindow):
         super().__init__()
         self.board_width = 800
         self.board_height = 500
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.ai_move)
+        self.game = Gumuku()
+        self.current_player = 'X'
         self.initUI()
 
     def initUI(self):
@@ -54,29 +59,21 @@ class GumukuBoard(QMainWindow):
     def createRightPanel(self):
         right_widget = QWidget()
         new_game_button = QPushButton("New Game")
-        reset_game_button = QPushButton("Reset Game")
         self.current_player_label = QPushButton("Current Player: You")
         button_height = 40
         button_width = 200
         new_game_button.setFixedSize(button_width, button_height)
-        reset_game_button.setFixedSize(button_width, button_height)
         self.current_player_label.setFixedSize(button_width, button_height)
         new_game_button.setStyleSheet(
             "QPushButton { background-color: #4CAF50; color: white; font-size: 18px; text-align: center; }"
             "QPushButton:hover { background-color: #45a049; }"
         )
-        reset_game_button.setStyleSheet(
-            "QPushButton { background-color: #f44336; color: white; font-size: 18px; text-align: center; }"
-            "QPushButton:hover { background-color: #d32f2f; }"
-        )
         self.current_player_label.setStyleSheet(
             "QPushButton { background-color: #2196F3; color: white; font-size: 18px; text-align: center; }"
         )
         new_game_button.clicked.connect(self.newGame)
-        reset_game_button.clicked.connect(self.resetGame)
         right_layout = QVBoxLayout()
         right_layout.addWidget(new_game_button)
-        right_layout.addWidget(reset_game_button)
         right_layout.addWidget(self.current_player_label)
         right_layout.setSpacing(10)
         right_layout.setAlignment(Qt.AlignHCenter)
@@ -84,28 +81,56 @@ class GumukuBoard(QMainWindow):
         return right_widget
 
     def buttonClicked(self):
-        sender = self.sender()
-        current_color = sender.palette().button().color()
-        new_color = QColor(
-            Qt.red) if current_color == Qt.green else QColor(Qt.green)
-        sender.setStyleSheet(
-            f"border-radius: 20px; background-color: {new_color.name()};")
+        if self.current_player != 'X':
+            return
         
-        print(sender.position.x, sender.position.y)
+        sender = self.sender()
+        x, y = sender.position.x, sender.position.y
+        if not self.game.is_valid_move(x, y):
+            return
+        
+        sender.setStyleSheet(
+            f"border-radius: 20px; background-color: green;")
+        self.game.make_move(x, y, self.game.PLAYER_MARKER)
+        
+        if self.game.is_won(self.game.PLAYER_MARKER):
+            self.current_player_label.setText("You Won!!")
+            self.game_ended()
+            return
+            
+        self.current_player = 'O'
+        self.current_player_label.setText("Current Player: AI")
+        
+        self.timer.start(1000)
 
     def newGame(self):
         for row in range(10):
             for col in range(10):
                 self.buttons[row][col].setStyleSheet(
                     "QPushButton { border-radius: 20px; background-color: grey; }")
+                self.buttons[row][col].setDisabled(False)
+        self.current_player_label.setText("Current Player: You")
+        self.game.reset_game()
+
+    def ai_move(self):
+        self.timer.stop()
+        pos = self.game.get_ai_move()
+        self.buttons[pos.x][pos.y].setStyleSheet(f"border-radius: 20px; background-color: red;")
+        self.game.make_move(pos.x, pos.y, self.game.AI_MARKER)
+        
+        if self.game.is_won(self.game.AI_MARKER):
+            self.current_player_label.setText("AI Won!!")
+            self.game_ended()
+            return
+        
+        self.current_player = 'X'
         self.current_player_label.setText("Current Player: You")
 
-    def resetGame(self):
-        for row in range(10):
-            for col in range(10):
-                self.buttons[row][col].setStyleSheet(
-                    "QPushButton { border-radius: 20px; background-color: grey; }")
-        self.current_player_label.setText("Current Player: You")
+        
+    def game_ended(self):
+        for i in range(self.game.board_size):
+            for j in range(self.game.board_size):
+                self.buttons[i][j].setDisabled(True)
 
 
 if __name__ == "__main__":

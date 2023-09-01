@@ -32,6 +32,9 @@ class Gumuku:
 
     def __is_valid_point(self, point):
         return point.x >= 0 and point.x < self.board_size and point.y >= 0 and point.y < self.board_size
+    
+    def is_valid_move(self, x: int, y: int) -> bool:
+        return self.board[x][y] == self.EMPTY_MARKER
 
     def __get_available_moves(self):
         available_moves = []
@@ -62,16 +65,21 @@ class Gumuku:
             print(row)
         print()
 
-    def make_move(self, pos, player) -> bool:
-        if (self.board[pos.x][pos.y] != self.EMPTY_MARKER):
+    def make_move(self, x: int, y: int, player: int) -> bool:
+        if (self.board[x][y] != self.EMPTY_MARKER):
             return False
-        self.board[pos.x, pos.y] = player
+        self.board[x][y] = player
         return True
 
     def swap_current_player(self):
         self.current_plyer = self.AI_MARKER if self.current_plyer == self.PLAYER_MARKER else self.PLAYER_MARKER
+        
+    def reset_game(self):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                self.board[i][j] = self.EMPTY_MARKER
 
-    def is_won(self, player) -> bool:
+    def is_won(self, player: int) -> bool:
         boundary = self.win_row - 1
         # Check rows
         for row in range(self.board_size):
@@ -103,7 +111,7 @@ class Gumuku:
     def is_game_over(self) -> bool:
         return self.__is_board_full() or self.is_won(self.PLAYER_MARKER) or self.is_won(self.AI_MARKER)
 
-    def __minimax_alpha_beta_pruning(self, marker, depth, alpha, beta):
+    def __minimax_alpha_beta_pruning(self, marker: int, depth: int, alpha: int, beta: int):
         best_move = Point(-1, -1)
         best_score = -self.inf if marker == self.AI_MARKER else self.inf
         
@@ -116,10 +124,9 @@ class Gumuku:
         elif self.__is_board_full():
             return best_move, 0
         
-        if (depth >= 5):
+        if (depth >= 3):
             # print(depth)
             return best_move, 0
-
 
         for current_move in self.__get_available_moves_1():
             self.board[current_move.x][current_move.y] = marker
