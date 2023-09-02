@@ -83,50 +83,55 @@ class GumukuBoard(QMainWindow):
     def buttonClicked(self):
         if self.current_player != 'X':
             return
-        
+
         sender = self.sender()
         x, y = sender.position.x, sender.position.y
         if not self.game.is_valid_move(x, y):
             return
-        
+
         sender.setStyleSheet(
             f"border-radius: 20px; background-color: green;")
         self.game.make_move(x, y, self.game.PLAYER_MARKER)
-        
+
         if self.game.is_won(self.game.PLAYER_MARKER):
             self.current_player_label.setText("You Won!!")
             self.game_ended()
             return
-            
+
         self.current_player = 'O'
         self.current_player_label.setText("Current Player: AI")
-        
+
         self.timer.start(1000)
 
     def newGame(self):
-        for row in range(10):
-            for col in range(10):
-                self.buttons[row][col].setStyleSheet(
+        for i in range(10):
+            for j in range(10):
+                self.buttons[i][j].setStyleSheet(
                     "QPushButton { border-radius: 20px; background-color: grey; }")
-                self.buttons[row][col].setDisabled(False)
+                self.buttons[i][j].setEnabled(True)
+
+        self.current_player = 'X'
         self.current_player_label.setText("Current Player: You")
         self.game.reset_game()
 
     def ai_move(self):
+        # find winning pos for ai for last move
+        # find winning pos for player for last move
+        
         self.timer.stop()
         pos = self.game.get_ai_move()
-        self.buttons[pos.x][pos.y].setStyleSheet(f"border-radius: 20px; background-color: red;")
+        self.buttons[pos.x][pos.y].setStyleSheet(
+            f"border-radius: 20px; background-color: red;")
         self.game.make_move(pos.x, pos.y, self.game.AI_MARKER)
-        
+
         if self.game.is_won(self.game.AI_MARKER):
             self.current_player_label.setText("AI Won!!")
             self.game_ended()
             return
-        
+
         self.current_player = 'X'
         self.current_player_label.setText("Current Player: You")
-        
-        
+
     def game_ended(self):
         for i in range(self.game.board_size):
             for j in range(self.game.board_size):
